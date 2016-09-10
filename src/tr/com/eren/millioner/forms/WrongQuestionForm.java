@@ -6,6 +6,7 @@
 package tr.com.eren.millioner.forms;
 
 import javax.swing.JOptionPane;
+import tr.com.eren.millioner.entity.MillionerUser;
 import tr.com.eren.millioner.entity.WrongQuestion;
 import tr.com.eren.millioner.repository.WrongQuestionRepository;
 
@@ -20,11 +21,11 @@ public class WrongQuestionForm extends javax.swing.JFrame {
      *
      * @param soruId
      */
-    private long soruId;
+    MillionerUser millionerUser;
 
-    public WrongQuestionForm(long soruId) {
+    public WrongQuestionForm(MillionerUser millionerUser) {
         initComponents();
-        this.soruId = soruId;
+        this.millionerUser = millionerUser;
     }
 
     public WrongQuestionForm() {
@@ -122,14 +123,14 @@ public class WrongQuestionForm extends javax.swing.JFrame {
             wrongQuestion.setHataliSoruComment(textComment.getText());
             wrongQuestion.setHataliSoruSenderEmail(textEmail.getText());
             wrongQuestion.setIsActive(true);
-            wrongQuestion.setCurrentSoruId(soruId);
+            wrongQuestion.setCurrentSoruId(millionerUser.getCurrentQuestionId());
             wrongQuestionRepository.insert(wrongQuestion);
         }
     }//GEN-LAST:event_buttonSendItActionPerformed
 
     private void buttonIgnoreItActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonIgnoreItActionPerformed
-        UserInterface userInterface = new UserInterface("Geri Döndü");
-        userInterface.getQuestion(soruId);
+        UserInterface userInterface = new UserInterface(millionerUser);
+        userInterface.getQuestion(millionerUser.getCurrentQuestionId());
         this.setVisible(false);
         userInterface.setVisible(true);
     }//GEN-LAST:event_buttonIgnoreItActionPerformed

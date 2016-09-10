@@ -12,8 +12,10 @@ import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import tr.com.eren.millioner.entity.MillionerUser;
 import tr.com.eren.millioner.handlers.Controller;
 import tr.com.eren.millioner.entity.Question;
+import tr.com.eren.millioner.repository.MillionerUserRepository;
 import tr.com.eren.millioner.repository.QuestionRepository;
 
 /**
@@ -31,6 +33,7 @@ public final class UserInterface extends javax.swing.JFrame {
     List<Question> questionList;
     QuestionRepository sorularRepository;
     Question soru;
+    MillionerUser millionerUser;
     int questionNumber = 0;
     long currentId;
     List<JLabel> moneyList;
@@ -41,9 +44,11 @@ public final class UserInterface extends javax.swing.JFrame {
     boolean doubleChoiceSelect;
     int selectedButtonCount = 1;
     long checkedNumber = 0;
+    String username;
 
-    public UserInterface(String username) {
+    public UserInterface(MillionerUser millionerUser) {
         this.setTitle("Millioner");
+        this.millionerUser=millionerUser;
         cont = new Controller();
         sorularRepository = new QuestionRepository();
         questionList = sorularRepository.list();
@@ -52,7 +57,7 @@ public final class UserInterface extends javax.swing.JFrame {
         initComponents();
         getIcons();
         newQuestion();
-        this.lblKullaniciAdi.setText("Milyoner'e Hoşgeldin " + username);
+        this.lblKullaniciAdi.setText("Milyoner'e Hoşgeldin " + millionerUser.getMillionerUsername());
         moneyList.add(label100);
         moneyList.add(label200);
         moneyList.add(label500);
@@ -65,9 +70,8 @@ public final class UserInterface extends javax.swing.JFrame {
 
     }
 
-
     public UserInterface() {
-  
+
     }
 
     public void setSoruLabels() {
@@ -108,7 +112,6 @@ public final class UserInterface extends javax.swing.JFrame {
 
     }
 
-
     public void getQuestion(long checkedNumber) {
 
         soru = questionList.get((int) checkedNumber);
@@ -119,9 +122,15 @@ public final class UserInterface extends javax.swing.JFrame {
     }
 
     public void getResult(int btnNum) {
-        
+        MillionerUserRepository millionerUserRepository = new MillionerUserRepository();
+        MillionerUser millionerUserLocal = new MillionerUser();
         if (soru.getCevap() == btnNum) {
-            moneyList.get(questionNumber - 1).setText("DONE");
+            moneyList.get(questionNumber - 1).setEnabled(false);
+            moneyList.get(questionNumber - 1).setBackground(Color.blue);
+            moneyList.get(questionNumber - 1).setOpaque(true);
+            millionerUserLocal=millionerUserRepository.find(millionerUser.getMillionerUserId()); 
+            millionerUserLocal.setTotalSalary(Integer.parseInt(moneyList.get(questionNumber - 1).getText()));
+            millionerUserRepository.update(millionerUserLocal);
             alert("Doğru");
 
         } else if (doubleChoiceSelect) {
@@ -150,7 +159,7 @@ public final class UserInterface extends javax.swing.JFrame {
     public void alert(String msg) {
         JOptionPane.showMessageDialog(null, msg);
         if (JOptionPane.OK_OPTION == 0 && msg == "Doğru") {
-            for(JButton button : buttonList){
+            for (JButton button : buttonList) {
                 button.setEnabled(true);
             }
             newQuestion();

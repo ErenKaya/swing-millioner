@@ -44,11 +44,11 @@ public final class UserInterface extends javax.swing.JFrame {
     boolean doubleChoiceSelect;
     int selectedButtonCount = 1;
     long checkedNumber = 0;
-    String username;
+    boolean WrongQuestionButtonIsPush;
 
     public UserInterface(MillionerUser millionerUser) {
         this.setTitle("Millioner");
-        this.millionerUser=millionerUser;
+        this.millionerUser = millionerUser;
         cont = new Controller();
         sorularRepository = new QuestionRepository();
         questionList = sorularRepository.list();
@@ -90,10 +90,13 @@ public final class UserInterface extends javax.swing.JFrame {
     }
 
     public void newQuestion() {
+        MillionerUserRepository millionerUserRepository = new MillionerUserRepository();
+        MillionerUser millionerUserLocal = new MillionerUser();
         sorularRepository = new QuestionRepository();
+        millionerUserLocal = millionerUserRepository.find(millionerUser.getMillionerUserId());
         try {
             if (questionNumber == 5) {
-                JOptionPane.showMessageDialog(this, "Won");
+                JOptionPane.showMessageDialog(this, "Toplam Kazandığınız Ödül Miktarı :" + millionerUserLocal.getTotalSalary());
                 System.exit(1);
             } else {
 
@@ -118,6 +121,9 @@ public final class UserInterface extends javax.swing.JFrame {
         queCheckList.add(checkedNumber);
         setSoruLabels();
         setEnableButtons();
+        if (WrongQuestionButtonIsPush) {
+            questionNumber = (int) millionerUser.getCurrentQuestionId();
+        }
 
     }
 
@@ -128,7 +134,7 @@ public final class UserInterface extends javax.swing.JFrame {
             moneyList.get(questionNumber - 1).setEnabled(false);
             moneyList.get(questionNumber - 1).setBackground(Color.blue);
             moneyList.get(questionNumber - 1).setOpaque(true);
-            millionerUserLocal=millionerUserRepository.find(millionerUser.getMillionerUserId()); 
+            millionerUserLocal = millionerUserRepository.find(millionerUser.getMillionerUserId());
             millionerUserLocal.setTotalSalary(Integer.parseInt(moneyList.get(questionNumber - 1).getText()));
             millionerUserRepository.update(millionerUserLocal);
             alert("Doğru");
@@ -455,7 +461,13 @@ public final class UserInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonDoubleChoiceActionPerformed
 
     private void buttonWrongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonWrongActionPerformed
-        WrongQuestionForm wrongQuestionForm = new WrongQuestionForm(checkedNumber);
+        MillionerUserRepository millionerUserRepository = new MillionerUserRepository();
+        MillionerUser millionerUserLocal = new MillionerUser();
+        millionerUserLocal = millionerUserRepository.find(millionerUser.getMillionerUserId());
+        millionerUserLocal.setCurrentQuestionId(checkedNumber);
+        millionerUserRepository.update(millionerUserLocal);
+        WrongQuestionButtonIsPush = true;
+        WrongQuestionForm wrongQuestionForm = new WrongQuestionForm(millionerUserLocal);
         this.setVisible(false);
         wrongQuestionForm.setVisible(true);
     }//GEN-LAST:event_buttonWrongActionPerformed

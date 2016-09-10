@@ -95,13 +95,13 @@ public class UserAutentication extends javax.swing.JFrame {
             this.setVisible(false);
             adminPanel.setVisible(true);
         } else if (checkAgreement.isSelected()) {
-//            MillionerUserRepository millionerUserRepository = new MillionerUserRepository();
-//            MillionerUser millionerUser = new MillionerUser();
-//            millionerUser.setMillionerUsername(textUserName.getText());
-//            millionerUser.setTotalSalary(0);
-//            millionerUserRepository.insert(millionerUser);
+            MillionerUserRepository millionerUserRepository = new MillionerUserRepository();
+            MillionerUser millionerUser = new MillionerUser();
+            millionerUser.setMillionerUsername(textUserName.getText());
+            millionerUser.setTotalSalary(0);
+            millionerUserRepository.insert(millionerUser);
             this.setVisible(false);
-            UserInterface frameGoster = new UserInterface(textUserName.getText());
+            UserInterface frameGoster = new UserInterface(millionerUser);
             frameGoster.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(null, "Lütfen oyuna katılma kurallarını okuyunuz ve onaylayınız...");

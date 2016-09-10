@@ -16,14 +16,16 @@ public class MillionerUser implements Serializable {
     private long millionerUserId;
     private String millionerUsername;
     private int totalSalary;
+    private long currentQuestionId;
 
     public MillionerUser() {
     }
 
-    public MillionerUser(long millionerUserId, String millionerUsername, int totalSalary) {
+    public MillionerUser(long millionerUserId, String millionerUsername, int totalSalary, long currentQuestionId) {
         this.millionerUserId = millionerUserId;
         this.millionerUsername = millionerUsername;
         this.totalSalary = totalSalary;
+        this.currentQuestionId = currentQuestionId;
     }
 
     public long getMillionerUserId() {
@@ -48,6 +50,14 @@ public class MillionerUser implements Serializable {
 
     public void setTotalSalary(int totalSalary) {
         this.totalSalary = totalSalary;
+    }
+
+    public long getCurrentQuestionId() {
+        return currentQuestionId;
+    }
+
+    public void setCurrentQuestionId(long currentQuestionId) {
+        this.currentQuestionId = currentQuestionId;
     }
 
 }

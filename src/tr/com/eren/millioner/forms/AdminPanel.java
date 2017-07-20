@@ -5,10 +5,15 @@
  */
 package tr.com.eren.millioner.forms;
 
+import java.awt.HeadlessException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import tr.com.eren.millioner.entity.Question;
+import tr.com.eren.millioner.entity.WrongQuestion;
 import tr.com.eren.millioner.handlers.Controller;
 import tr.com.eren.millioner.repository.QuestionRepository;
+import tr.com.eren.millioner.repository.WrongQuestionRepository;
 
 /**
  *
@@ -22,9 +27,27 @@ public class AdminPanel extends javax.swing.JFrame {
     public AdminPanel() {
         this.setTitle("Admin Panel");
         initComponents();
-        
+        wrongQuestionComboBoxAdder();
+        this.labelWrongQuestionId.setVisible(false);
+
     }
-    public void clear(){
+
+    public void insert() throws NumberFormatException, HeadlessException {
+        Question soru = new Question();
+        QuestionRepository sorularRepository = new QuestionRepository();
+        soru.setSoru(textQuestion.getText());
+        soru.setSec1(textSelectionA.getText());
+        soru.setSec2(textSelectionB.getText());
+        soru.setSec3(textSelectionC.getText());
+        soru.setSec4(textSelectionD.getText());
+        soru.setSoruQuality(Integer.parseInt(textQuestionQuality.getText()));
+        soru.setCevap(Integer.parseInt(comboQuestionAnswer.getSelectedItem().toString().substring(2, 3)));
+        sorularRepository.insert(soru);
+        JOptionPane.showMessageDialog(null, "Soru başarıyla eklendi...");
+        clear();
+    }
+
+    public void clear() {
         textQuestion.setText("");
         textSelectionA.setText("");
         textSelectionB.setText("");
@@ -34,6 +57,22 @@ public class AdminPanel extends javax.swing.JFrame {
         textQuestionQuality.setText("");
         textQuestion.requestFocus();
     }
+
+    public void wrongQuestionComboBoxAdder() {
+        List<WrongQuestion> wrongQuestionList = new ArrayList<>();
+        WrongQuestionRepository wrongQuestionRepository = new WrongQuestionRepository();
+        wrongQuestionList = wrongQuestionRepository.list();
+        for (WrongQuestion wrongQuestion : wrongQuestionList) {
+            
+            comboBoxWrongQuestionList.addItem(wrongQuestion.getHataliSoruSenderEmail());
+            //Aşağıdaki disabled label ile sıradaki hatalı sorunun id'sini aldım.
+//           Bunun sebebi; combobox'un içine integer veya long değer yazılamamasıdır.
+//           Geçici koddur.
+//            labelWrongQuestionId.setText(wrongQuestion.getHataliSoruId());
+            
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,6 +100,12 @@ public class AdminPanel extends javax.swing.JFrame {
         buttonDeleteAll = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         buttonExit = new javax.swing.JButton();
+        labelComment = new javax.swing.JLabel();
+        labelWrongText = new javax.swing.JLabel();
+        labelWrongCount = new javax.swing.JLabel();
+        comboBoxWrongQuestionList = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        labelWrongQuestionId = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -110,20 +155,28 @@ public class AdminPanel extends javax.swing.JFrame {
             }
         });
 
+        labelWrongText.setText("Hata bildirilen sorular");
+
+        labelWrongCount.setText("0");
+
+        comboBoxWrongQuestionList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seçiniz" }));
+
+        jButton1.setText("Getir");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        labelWrongQuestionId.setText("0");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(buttonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(buttonDeleteAll)
-                        .addGap(18, 18, 18)
-                        .addComponent(buttonInsert))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -154,60 +207,91 @@ public class AdminPanel extends javax.swing.JFrame {
                                         .addComponent(jLabel4)
                                         .addGap(18, 18, 18)
                                         .addComponent(textSelectionB, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(comboQuestionAnswer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addGap(0, 1, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(comboQuestionAnswer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textQuestionQuality)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addGap(106, 106, 106))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(labelComment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(textQuestionQuality, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addGap(10, 10, 10)
+                                    .addComponent(buttonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(8, 8, 8)
+                                    .addComponent(buttonDeleteAll)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(buttonInsert))))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(labelWrongCount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(labelWrongText, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))
+                    .addComponent(jButton1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(labelWrongQuestionId, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(comboBoxWrongQuestionList, javax.swing.GroupLayout.Alignment.LEADING, 0, 131, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel1))
-                    .addComponent(textQuestion, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
-                .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(textSelectionA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(textQuestion, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(labelWrongText)))
+                .addGap(10, 10, 10)
+                .addComponent(labelWrongCount)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(textSelectionA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(textSelectionB))
-                        .addGap(25, 25, 25)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(textSelectionD)
-                            .addComponent(jLabel3)
-                            .addComponent(textSelectionC))))
+                            .addComponent(textSelectionB)
+                            .addComponent(comboBoxWrongQuestionList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel5)
+                                    .addComponent(textSelectionD)
+                                    .addComponent(jLabel3)
+                                    .addComponent(textSelectionC)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(comboQuestionAnswer))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textQuestionQuality, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textQuestionQuality)
                     .addComponent(jLabel7))
                 .addGap(2, 2, 2)
                 .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(labelComment, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(buttonDeleteAll, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(buttonInsert, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(buttonExit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(19, 19, 19))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buttonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonInsert, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonDeleteAll, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelWrongQuestionId))
+                .addGap(15, 15, 15))
         );
 
         pack();
@@ -220,28 +304,22 @@ public class AdminPanel extends javax.swing.JFrame {
     private void buttonInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonInsertActionPerformed
         Controller controller = new Controller();
 
-        if (textQuestion.getText().isEmpty() || textSelectionA.getText() == "" || textSelectionB.getText() == ""
-                || textSelectionC.getText() == "" || textSelectionD.getText() == "" || textQuestionQuality.getText() == ""
-                || comboQuestionAnswer.getSelectedItem() == "Seçiniz") {
+        if (       textQuestion.getText().isEmpty()
+                || textSelectionA.getText().isEmpty()
+                || textSelectionB.getText().isEmpty()
+                || textSelectionC.getText().isEmpty()
+                || textSelectionD.getText().isEmpty()
+                || textQuestionQuality.getText().isEmpty()
+                || comboQuestionAnswer.getSelectedItem() == "--Seçiniz--") {
             JOptionPane.showMessageDialog(null, "Herhangi bir alan boş geçilemez...");
             if (!controller.isInteger(textQuestionQuality.getText())) {
                 JOptionPane.showMessageDialog(null, "Lütfen 0-10 arasında Kalite giriniz..");
             }
         } else {
-            Question soru = new Question();
-            QuestionRepository sorularRepository = new QuestionRepository();
-            soru.setSoru(textQuestion.getText());
-            soru.setSec1(textSelectionA.getText());
-            soru.setSec2(textSelectionB.getText());
-            soru.setSec3(textSelectionC.getText());
-            soru.setSec4(textSelectionD.getText());
-            soru.setSoruQuality(Integer.parseInt(textQuestionQuality.getText()));
-            soru.setCevap(Integer.parseInt(comboQuestionAnswer.getSelectedItem().toString().substring(2, 3)));
-            sorularRepository.insert(soru);
-            JOptionPane.showMessageDialog(null, "Soru başarıyla eklendi...");
-            clear();
+            insert();
         }
     }//GEN-LAST:event_buttonInsertActionPerformed
+
 
     private void buttonDeleteAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteAllActionPerformed
         clear();
@@ -250,6 +328,10 @@ public class AdminPanel extends javax.swing.JFrame {
     private void buttonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExitActionPerformed
         System.exit(1);
     }//GEN-LAST:event_buttonExitActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -290,7 +372,9 @@ public class AdminPanel extends javax.swing.JFrame {
     private javax.swing.JButton buttonDeleteAll;
     private javax.swing.JButton buttonExit;
     private javax.swing.JButton buttonInsert;
+    private javax.swing.JComboBox<String> comboBoxWrongQuestionList;
     private javax.swing.JComboBox<String> comboQuestionAnswer;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -299,6 +383,10 @@ public class AdminPanel extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel labelComment;
+    private javax.swing.JLabel labelWrongCount;
+    private javax.swing.JLabel labelWrongQuestionId;
+    private javax.swing.JLabel labelWrongText;
     private javax.swing.JTextField textQuestion;
     private javax.swing.JTextField textQuestionQuality;
     private javax.swing.JTextField textSelectionA;

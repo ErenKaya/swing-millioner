@@ -12,7 +12,7 @@ public class WrongQuestionRepository {
     public List<WrongQuestion> list() {
 
         EntityManager entityManager = getEntityManager();
-        Query query = entityManager.createQuery("select question from Question as question");
+        Query query = entityManager.createQuery("select wrongQuestion from WrongQuestion as wrongQuestion");
         List<WrongQuestion> questionList = query.getResultList();
         entityManager.close();
         return questionList;

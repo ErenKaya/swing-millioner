@@ -29,7 +29,6 @@ public final class UserInterface extends javax.swing.JFrame {
      *
      * @param username
      */
-    Controller cont;
     List<Question> questionList;
     QuestionRepository sorularRepository;
     Question soru;
@@ -49,7 +48,6 @@ public final class UserInterface extends javax.swing.JFrame {
     public UserInterface(MillionerUser millionerUser) {
         this.setTitle("Millioner");
         this.millionerUser = millionerUser;
-        cont = new Controller();
         sorularRepository = new QuestionRepository();
         questionList = sorularRepository.list();
         moneyList = new ArrayList<>();
@@ -163,15 +161,23 @@ public final class UserInterface extends javax.swing.JFrame {
     }
 
     public void alert(String msg) {
+        MillionerUserRepository millionerUserRepository = new MillionerUserRepository();
+        MillionerUser millionerUserLocal = new MillionerUser();
         JOptionPane.showMessageDialog(null, msg);
         if (JOptionPane.OK_OPTION == 0 && msg == "Doğru") {
             for (JButton button : buttonList) {
                 button.setEnabled(true);
             }
             newQuestion();
-
         } else {
-            JOptionPane.showMessageDialog(null, "Oyunu Kaybettiniz");
+            millionerUserLocal = millionerUserRepository.find(millionerUser.getMillionerUserId());
+            if (millionerUserLocal.getTotalSalary() >= 500) {
+                JOptionPane.showMessageDialog(this, "Toplam Kazandığınız Ödül Miktarı :" 
+                        + millionerUserLocal.getTotalSalary());    
+            }else{
+                JOptionPane.showMessageDialog(null, "Ödül Kazanamadınız...");
+            }
+            
             System.exit(1);
         }
     }
@@ -254,6 +260,7 @@ public final class UserInterface extends javax.swing.JFrame {
         label2000.setText("2000");
         label2000.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        buttonFiftyFifty.setText("50/50");
         buttonFiftyFifty.setName(""); // NOI18N
         buttonFiftyFifty.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -261,6 +268,8 @@ public final class UserInterface extends javax.swing.JFrame {
             }
         });
 
+        buttonDoubleChoice.setText("2X");
+        buttonDoubleChoice.setToolTipText("");
         buttonDoubleChoice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonDoubleChoiceActionPerformed(evt);
@@ -272,19 +281,21 @@ public final class UserInterface extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(label500, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(label100, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(label1000, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(label2000, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
-                        .addComponent(label200, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(buttonFiftyFifty, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(buttonDoubleChoice, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(18, Short.MAX_VALUE))
+                        .addGap(14, 14, 14)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(label500, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(label100, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(label1000, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(label2000, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                            .addComponent(label200, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(buttonFiftyFifty)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonDoubleChoice, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

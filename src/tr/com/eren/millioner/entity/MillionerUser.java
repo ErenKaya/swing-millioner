@@ -21,7 +21,8 @@ public class MillionerUser implements Serializable {
     public MillionerUser() {
     }
 
-    public MillionerUser(long millionerUserId, String millionerUsername, int totalSalary, long currentQuestionId) {
+    public MillionerUser(long millionerUserId, String millionerUsername,
+            int totalSalary, long currentQuestionId) {
         this.millionerUserId = millionerUserId;
         this.millionerUsername = millionerUsername;
         this.totalSalary = totalSalary;
